@@ -393,8 +393,8 @@
         bottom: '28px',
         left: '50%',
         transform: 'translateX(-50%) translateY(10px)',
-        background: '#1c1c1f',
-        color: '#e8e8ec',
+        background: '#1a1a1a',
+        color: '#ffffff',
         padding: '12px 24px',
         borderRadius: '8px',
         fontSize: '13px',
@@ -403,8 +403,8 @@
         opacity: '0',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         pointerEvents: 'none',
-        border: '1px solid rgba(232, 160, 180, 0.25)',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.4), 0 0 15px rgba(232, 160, 180, 0.08)',
+        border: '1px solid rgba(183, 28, 80, 0.3)',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.15), 0 0 12px rgba(183, 28, 80, 0.1)',
       });
       document.body.appendChild(toast);
     }
@@ -416,5 +416,43 @@
       toast.style.transform = 'translateX(-50%) translateY(10px)';
     }, 3000);
   }
+
+  /* ================================================================
+     Arrow-key navigation between inputs
+     ================================================================ */
+  (function () {
+    function getFocusableFields() {
+      return Array.from(
+        document.querySelectorAll(
+          '#adrForm input:not([type="checkbox"]):not([type="hidden"]), #adrForm select'
+        )
+      ).filter(function (el) {
+        return !el.disabled && el.offsetParent !== null;
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+
+      var active = document.activeElement;
+      if (!active || !active.closest('#adrForm')) return;
+      if (active.tagName !== 'INPUT' && active.tagName !== 'SELECT') return;
+      if (active.type === 'checkbox') return;
+
+      var fields = getFocusableFields();
+      var idx = fields.indexOf(active);
+      if (idx === -1) return;
+
+      e.preventDefault();
+
+      if (e.key === 'ArrowDown') {
+        var next = fields[idx + 1];
+        if (next) next.focus();
+      } else {
+        var prev = fields[idx - 1];
+        if (prev) prev.focus();
+      }
+    });
+  })();
 
 })();
